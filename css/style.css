@@ -1,0 +1,35 @@
+html,
+body {
+  height: auto;
+  min-height: 100vh;
+}
+.cards {
+  padding: 15px;
+  max-width: 600px;
+  margin: 20px auto;
+  border: 1px solid #000;
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(4, 1fr);
+  border-radius: 8px;
+}
+.card {
+  padding: 5px;
+  width: 100px;
+  justify-self: center;
+  height: 150px;
+  background-color: violet;
+  border: 1px solid rgb(122, 46, 122);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-open .card__image {
+  opacity: 1;
+}
+.card__image {
+  max-width: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease 0s;
+}
