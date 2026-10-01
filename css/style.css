@@ -5,7 +5,7 @@ body {
 }
 .cards {
   padding: 15px;
-  max-width: 600px;
+  max-width: 500px;
   margin: 20px auto;
   border: 1px solid #000;
   display: grid;
@@ -24,6 +24,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 .card-open .card__image {
   opacity: 1;
@@ -32,4 +33,6 @@ body {
   max-width: 100%;
   opacity: 0;
   transition: opacity 0.3s ease 0s;
+}
+.scoreboard {
 }
