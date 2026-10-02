@@ -74,6 +74,47 @@ let lockBoard = false
 let score = 0
 let attempt = 0
 
+const header = document.createElement('header')
+header.classList.add('header')
+const headerNewGameBtn = document.createElement('button')
+headerNewGameBtn.textContent = 'Нова гра'
+headerNewGameBtn.classList.add('header-new-game-btn')
+headerNewGameBtn.addEventListener('click', resetGame)
+header.append(headerNewGameBtn)
+
+const userScoreBtn = document.createElement('button')
+userScoreBtn.classList.add('user-score-btn')
+userScoreBtn.textContent = 'Таблиця лідерів'
+header.append(userScoreBtn)
+
+userScoreBtn.addEventListener('click', () => {
+  let history = JSON.parse(localStorage.getItem('userStorage')) || []
+  const topTen = history.sort((a, b) => a.attempt - b.attempt).slice(0, 10)
+  console.log(topTen)
+  const userScoreContainer = document.createElement('div')
+  userScoreContainer.classList.add('user-score-container')
+  const userScoreCard = document.createElement('div')
+  userScoreCard.classList.add('user-score-card')
+  userScoreContainer.append(userScoreCard)
+  const userScoreTitle = document.createElement('h2')
+  userScoreTitle.textContent = 'Таблиця лідерів'
+  userScoreCard.append(userScoreTitle)
+  topTen.forEach((item, index) => {
+    const userScoreText = document.createElement('p')
+    userScoreText.classList.add('user-score-text')
+    userScoreText.textContent = `${index + 1}. ${item.date} ${item.attempt}`
+    userScoreCard.append(userScoreText)
+  })
+  const closeUserScore = document.createElement('button')
+  closeUserScore.classList.add('close-user-score-btn')
+  closeUserScore.addEventListener('click', () => {
+    userScoreContainer.remove()
+  })
+  document.body.append(userScoreContainer)
+})
+
+document.body.prepend(header)
+
 const scoreBoard = document.createElement('div')
 scoreBoard.classList.add('scoreboard')
 
@@ -113,6 +154,16 @@ for (let i = 0; i < copyCardArr.length; i++) {
       score++
       countScore.textContent = 'Знайдено пар ' + score + ' з 8'
       if (score === 8) {
+        const currentDateDay = new Date().getDate()
+        const currentDateMonth = new Date().getMonth() + 1
+        const currentDateYear = new Date().getFullYear()
+        const localData = {
+          date: `${currentDateDay}.${currentDateMonth}.${currentDateYear}`,
+          attempt: attempt,
+        }
+        let history = JSON.parse(localStorage.getItem('userStorage')) || []
+        history.push(localData)
+        localStorage.setItem('userStorage', JSON.stringify(history))
         setTimeout(() => {
           const modalBackground = document.createElement('div')
           modalBackground.classList.add('modal-background')
