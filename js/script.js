@@ -102,7 +102,7 @@ userScoreBtn.addEventListener('click', () => {
   topTen.forEach((item, index) => {
     const userScoreText = document.createElement('p')
     userScoreText.classList.add('user-score-text')
-    userScoreText.textContent = `${index + 1}. ${item.date} ${item.attempt}`
+    userScoreText.textContent = `${index + 1}. ${item.date} Кількість ходів: ${item.attempt}`
     userScoreCard.append(userScoreText)
   })
   const closeUserScore = document.createElement('button')
@@ -110,6 +110,7 @@ userScoreBtn.addEventListener('click', () => {
   closeUserScore.addEventListener('click', () => {
     userScoreContainer.remove()
   })
+  userScoreCard.append(closeUserScore)
   document.body.append(userScoreContainer)
 })
 
