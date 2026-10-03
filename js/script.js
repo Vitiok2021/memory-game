@@ -220,11 +220,9 @@ for (let i = 0; i < copyCardArr.length; i++) {
           openModal(modal)
         }, 500)
       }
-      console.log('The images matched')
 
       firstCard = null
       secondCard = null
-      console.log(score)
     } else {
       lockBoard = true
       timerId = setTimeout(() => {
