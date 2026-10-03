@@ -33,7 +33,6 @@ const cardArr = [
   },
 ]
 const copyCardArr = [...cardArr, ...cardArr]
-// console.log(copyCardArr)
 
 function shuffle(array) {
   let m = array.length,
@@ -113,7 +112,6 @@ header.append(userScoreBtn)
 userScoreBtn.addEventListener('click', () => {
   let history = JSON.parse(localStorage.getItem('userStorage')) || []
   const topTen = history.sort((a, b) => a.attempt - b.attempt).slice(0, 10)
-  // console.log(topTen)
 
   const userScoreContainer = document.createElement('div')
   userScoreContainer.classList.add('user-score-container')
@@ -184,7 +182,6 @@ for (let i = 0; i < copyCardArr.length; i++) {
     attempt++
     countAttempt.textContent = 'Moves: ' + attempt
     if (firstCard) secondCard = card
-    //  console.log(firstCard, secondCard)
     if (firstCard.dataset.name === secondCard.dataset.name) {
       score++
       countScore.textContent = 'Pairs found: ' + score + ' of 8'
