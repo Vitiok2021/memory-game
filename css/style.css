@@ -3,6 +3,40 @@ body {
   height: auto;
   min-height: 100vh;
 }
+body {
+  font-family: sans-serif;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+.scoreboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  font-size: 18px;
+  font-weight: bold;
+}
+button {
+  padding: 10px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  background-color: rgb(235, 174, 235);
+  border-radius: 8px;
+  transition: all 0.3s ease 0s;
+  font-weight: 600;
+  @media (any-hover: hover) {
+    &:hover {
+      background-color: rgb(207, 110, 207);
+      color: #fff;
+    }
+  }
+}
 .cards {
   padding: 15px;
   max-width: 500px;
@@ -25,6 +59,12 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: box-shadow 0.3s ease 0s;
+  @media (any-hover: hover) {
+    &:hover {
+      box-shadow: 0px 0px 15px 4px #d8abd2;
+    }
+  }
 }
 .card-open .card__image {
   opacity: 1;
@@ -34,5 +74,42 @@ body {
   opacity: 0;
   transition: opacity 0.3s ease 0s;
 }
-.scoreboard {
+.modal-background {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal,
+.user-score-container {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 24px;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+.user-score-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  /* text-align: center; */
+}
+.user-score-title {
+  text-align: center;
+  font-weight: 600;
+}
+.modal {
+  text-align: center;
+}
+.modal-text {
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.new-game-btn {
+  margin-right: 20px;
 }

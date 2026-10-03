@@ -49,15 +49,18 @@ function shuffle(array) {
   return array
 }
 function resetGame() {
+  clearTimeout(timerId)
+  lockBoard = false
   firstCard = null
   secondCard = null
   score = 0
   attempt = 0
-  countAttempt.textContent = 'Ходи: 0'
-  countScore.textContent = 'Знайдено пар: 0 з 8'
+  countAttempt.textContent = 'Moves: 0'
+  countScore.textContent = 'Pairs found: 0 of 8'
   const existingModal = document.querySelector('.modal-background')
   if (existingModal) {
     existingModal.remove()
+    document.body.style.overflow = ''
   }
   shuffle(copyCardArr)
   const refreshCard = document.querySelectorAll('.card')
@@ -67,51 +70,82 @@ function resetGame() {
     item.querySelector('.card__image').src = copyCardArr[index].img
   })
 }
+function openModal(content) {
+  const modalBg = document.createElement('div')
+  modalBg.classList.add('modal-background')
+  document.body.style.overflow = 'hidden'
+  modalBg.append(content)
+  document.body.append(modalBg)
+  modalBg.addEventListener('click', (e) => {
+    if (e.target === modalBg) {
+      modalBg.remove()
+      document.body.style.overflow = ''
+    }
+  })
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      modalBg.remove()
+      document.body.style.overflow = ''
+    }
+  })
+}
 shuffle(copyCardArr)
 let firstCard = null
 let secondCard = null
 let lockBoard = false
 let score = 0
 let attempt = 0
+let timerId = null
 
 const header = document.createElement('header')
 header.classList.add('header')
 const headerNewGameBtn = document.createElement('button')
-headerNewGameBtn.textContent = 'Нова гра'
+headerNewGameBtn.textContent = 'New Game'
 headerNewGameBtn.classList.add('header-new-game-btn')
 headerNewGameBtn.addEventListener('click', resetGame)
 header.append(headerNewGameBtn)
 
 const userScoreBtn = document.createElement('button')
 userScoreBtn.classList.add('user-score-btn')
-userScoreBtn.textContent = 'Таблиця лідерів'
+userScoreBtn.textContent = 'Leaderboard'
 header.append(userScoreBtn)
 
 userScoreBtn.addEventListener('click', () => {
   let history = JSON.parse(localStorage.getItem('userStorage')) || []
   const topTen = history.sort((a, b) => a.attempt - b.attempt).slice(0, 10)
-  console.log(topTen)
+  // console.log(topTen)
+
   const userScoreContainer = document.createElement('div')
   userScoreContainer.classList.add('user-score-container')
   const userScoreCard = document.createElement('div')
   userScoreCard.classList.add('user-score-card')
   userScoreContainer.append(userScoreCard)
   const userScoreTitle = document.createElement('h2')
-  userScoreTitle.textContent = 'Таблиця лідерів'
+  userScoreTitle.classList.add('user-score-title')
+  userScoreTitle.textContent = 'Leaderboard'
   userScoreCard.append(userScoreTitle)
-  topTen.forEach((item, index) => {
-    const userScoreText = document.createElement('p')
-    userScoreText.classList.add('user-score-text')
-    userScoreText.textContent = `${index + 1}. ${item.date} Кількість ходів: ${item.attempt}`
-    userScoreCard.append(userScoreText)
-  })
+  if (topTen.length === 0) {
+    const notTop = document.createElement('p')
+    notTop.classList.add('not-top')
+    notTop.textContent = 'No results yet'
+    userScoreCard.append(notTop)
+  } else {
+    topTen.forEach((item, index) => {
+      const userScoreText = document.createElement('p')
+      userScoreText.classList.add('user-score-text')
+      userScoreText.textContent = `${index + 1}. ${item.date} Number of moves: ${item.attempt}`
+      userScoreCard.append(userScoreText)
+    })
+  }
   const closeUserScore = document.createElement('button')
+  closeUserScore.textContent = 'Close'
   closeUserScore.classList.add('close-user-score-btn')
   closeUserScore.addEventListener('click', () => {
-    userScoreContainer.remove()
+    userScoreContainer.parentElement.remove()
+    document.body.style.overflow = ''
   })
   userScoreCard.append(closeUserScore)
-  document.body.append(userScoreContainer)
+  openModal(userScoreContainer)
 })
 
 document.body.prepend(header)
@@ -120,10 +154,10 @@ const scoreBoard = document.createElement('div')
 scoreBoard.classList.add('scoreboard')
 
 let countAttempt = document.createElement('p')
-countAttempt.textContent = 'Ходи: 0'
+countAttempt.textContent = 'Moves: 0'
 
 let countScore = document.createElement('p')
-countScore.textContent = 'Знайдено пар: 0 з 8'
+countScore.textContent = 'Pairs found: 0 of 8'
 
 scoreBoard.append(countAttempt)
 scoreBoard.append(countScore)
@@ -148,30 +182,29 @@ for (let i = 0; i < copyCardArr.length; i++) {
       return
     }
     attempt++
-    countAttempt.textContent = 'Ходи ' + attempt
+    countAttempt.textContent = 'Moves: ' + attempt
     if (firstCard) secondCard = card
     //  console.log(firstCard, secondCard)
     if (firstCard.dataset.name === secondCard.dataset.name) {
       score++
-      countScore.textContent = 'Знайдено пар ' + score + ' з 8'
+      countScore.textContent = 'Pairs found: ' + score + ' of 8'
       if (score === 8) {
-        const currentDateDay = new Date().getDate()
-        const currentDateMonth = new Date().getMonth() + 1
-        const currentDateYear = new Date().getFullYear()
+        const day = String(new Date().getDate()).padStart(2, '0')
+        const month = String(new Date().getMonth() + 1).padStart(2, '0')
+        const year = new Date().getFullYear()
         const localData = {
-          date: `${currentDateDay}.${currentDateMonth}.${currentDateYear}`,
+          date: `${day}.${month}.${year}`,
           attempt: attempt,
         }
         let history = JSON.parse(localStorage.getItem('userStorage')) || []
         history.push(localData)
         localStorage.setItem('userStorage', JSON.stringify(history))
         setTimeout(() => {
-          const modalBackground = document.createElement('div')
-          modalBackground.classList.add('modal-background')
           const modal = document.createElement('div')
           modal.classList.add('modal')
           const modalText = document.createElement('p')
-          modalText.textContent = `Вітаю Це перемога! Ви зробили ${attempt} ходів`
+          modalText.classList.add('modal-text')
+          modalText.textContent = `Congratulations! You won in ${attempt} moves`
           const newGame = document.createElement('button')
           newGame.classList.add('new-game-btn')
           newGame.textContent = 'New Game'
@@ -180,23 +213,24 @@ for (let i = 0; i < copyCardArr.length; i++) {
           closeGame.classList.add('close-game-btn')
           closeGame.textContent = 'Close'
           closeGame.addEventListener('click', () => {
-            modalBackground.remove()
+            modal.parentElement.remove()
+            document.body.style.overflow = ''
           })
           modal.append(modalText)
           modal.append(newGame)
           modal.append(closeGame)
-          modalBackground.append(modal)
-          document.body.append(modalBackground)
+
+          openModal(modal)
         }, 500)
       }
-      console.log('Зображення співпали')
+      console.log('The images matched')
 
       firstCard = null
       secondCard = null
       console.log(score)
     } else {
       lockBoard = true
-      setTimeout(() => {
+      timerId = setTimeout(() => {
         firstCard.classList.remove('card-open')
         secondCard.classList.remove('card-open')
         firstCard = null
